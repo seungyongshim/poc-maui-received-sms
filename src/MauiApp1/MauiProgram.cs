@@ -1,4 +1,4 @@
-﻿using MauiApp1.Data;
+using MauiApp1.Data;
 using Microsoft.Extensions.Logging;
 
 namespace MauiApp1
@@ -16,6 +16,7 @@ namespace MauiApp1
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddSingleton<SmsReceiver>();
 
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
