@@ -16,7 +16,7 @@ using System.Collections.ObjectModel;
 
 namespace MauiApp1.Pages
 {
-    public partial class Index
+    public partial class Index : IDisposable
     {
         [Inject]
         SmsReceiver SmsReceiver { get; set; }
@@ -24,6 +24,14 @@ namespace MauiApp1.Pages
         string Sms { get; set; }
 
         bool IsToggled { get; set; } = true;
+
+        CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
+
+        public void Dispose()
+        {
+            CancellationTokenSource.Cancel();
+            CancellationTokenSource.Dispose();
+        }
 
         protected override void OnInitialized()
         {
@@ -35,9 +43,9 @@ namespace MauiApp1.Pages
             {
                 Sms = "Hello";
 
-                while(true)
+                while(!CancellationTokenSource.IsCancellationRequested)
                 {
-                    var sms = await reader.ReadAsync();
+                    var sms = await reader.ReadAsync(CancellationTokenSource.Token);
 
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
